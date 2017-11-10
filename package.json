@@ -1,0 +1,15 @@
+{
+  "name": "mario",
+  "version": "1.0.0",
+  "description": "8-bit Mario built in JS (following tutorial by Meth Meth Method on YouTube)",
+  "main": "main.js",
+  "scripts": {
+    "start": "serve ./public",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ethan Stewart <eestewart23@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "serve": "^6.4.1"
+  }
+}
