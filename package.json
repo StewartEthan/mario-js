@@ -4,7 +4,8 @@
   "description": "8-bit Mario built in JS (following tutorial by Meth Meth Method on YouTube)",
   "main": "main.js",
   "scripts": {
-    "start": "serve ./public",
+    "start": "serve --port 8000 ./public",
+    "serve-help": "serve help",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ethan Stewart <eestewart23@gmail.com>",
