@@ -1,11 +1,6 @@
-import Compositor from './Compositor.js';
 import Timer from './Timer.js';
-import Entity from './Entity.js';
-import { Vector } from './math.js';
 import { loadLevel } from './loaders.js';
 import { createMario } from './entities.js';
-import { loadBackgroundSprites } from './sprites.js';
-import { createBackgroundLayer, createSpriteLayer } from './layers.js';
 
 import KeyboardState from './KeyboardState.js';
 
@@ -14,17 +9,14 @@ const ctx = canvas.getContext('2d');
 
 Promise.all([
   createMario(),
-  loadBackgroundSprites(),
   loadLevel('1-1')
 ])
-  .then(([ mario, bkgdSprites, level ]) => {
-    const comp = new Compositor();
-    const bkgdLayer = createBackgroundLayer(level.backgrounds, bkgdSprites);
-    comp.layers.push(bkgdLayer);
+  .then(([ mario, level ]) => {
 
     const GRAVITY = 2000;
     mario.pos.set(64, 180);
-    // mario.vel.set(200, -600);
+    
+    level.entities.add(mario);
 
     const SPACE = 32;
     const input = new KeyboardState();
@@ -36,9 +28,6 @@ Promise.all([
       }
     });
     input.listenTo(window);
-
-    const spriteLayer = createSpriteLayer(mario);
-    comp.layers.push(spriteLayer);
 
     const timer = new Timer(1/60);
 
@@ -55,12 +44,12 @@ Promise.all([
       // Probably an issue with my computer (see nearest comments above) and this hack will be gone once it's not an issue
       // Basically just prevents mario from updating for the first 60 frames
       if (shouldMarioUpdate) {
-        mario.update(DELTA_TIME);
+        level.update(DELTA_TIME);
         mario.vel.y += GRAVITY * DELTA_TIME;
       } else {
         shouldMarioUpdate = currentFrames++ === 60;
       }
-      comp.draw(ctx);
+      level.comp.draw(ctx);
       // mario.vel.y += GRAVITY * DELTA_TIME;
     }
 
