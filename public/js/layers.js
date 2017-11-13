@@ -8,14 +8,16 @@ function drawBackground(bkgd, ctx, sprites) {
   });
 }
 
-export function createBackgroundLayer(backgrounds, sprites) {
+export function createBackgroundLayer(level, sprites) {
   const buffer = document.createElement('canvas');
   buffer.width = 256;
   buffer.height = 240;
 
-  backgrounds.forEach(bkgd => {
-    drawBackground(bkgd, buffer.getContext('2d'), sprites);
-  });
+  const ctx = buffer.getContext('2d');
+
+  level.tiles.forEach((tile, x,y) => {
+    sprites.drawTile(tile.name, ctx, x,y);
+  })
 
   return function drawBackgroundLayer(ctx) {
     ctx.drawImage(buffer, 0,0);
