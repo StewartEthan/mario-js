@@ -10,7 +10,13 @@ export default class TileResolver {
 
   getByIndex(x, y) {
     const tile = this.matrix.get(x, y);
-    if (tile) return { tile };
+    if (tile) {
+      const y1 = y * this.tileSize;
+      return {
+        tile,
+        y1
+      };
+    }
   }
 
   matchByPosition(x, y) {

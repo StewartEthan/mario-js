@@ -5,11 +5,23 @@ export default class TileCollider {
     this.tiles = new TileResolver(tileMatrix);
   }
 
-  test(entity) {
+  checkY(entity) {
     const { x,y } = entity.pos;
     const match = this.tiles.matchByPosition(x,y);
-    if (match) {
-      
+    if (!match || match.tile.name !== 'ground') return;
+    
+    if (entity.vel.y > 0 && entity.pos.y > match.y1) {
+      entity.pos.y = match.y1;
+      entity.vel.y = 0;
     }
+  }
+
+  test(entity) {
+    this.checkY(entity);
+    // const { x,y } = entity.pos;
+    // const match = this.tiles.matchByPosition(x,y);
+    // if (match) {
+      
+    // }
   }
 }
