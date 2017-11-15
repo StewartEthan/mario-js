@@ -28,7 +28,7 @@ function createTiles(level, bkgds) {
 }
 
 export function loadLevel(name) {
-  const levelPromise = fetch(`/levels/${name}.json`).then(r => r.json());
+  const levelPromise = fetch(`./levels/${name}.json`).then(r => r.json());
   return Promise.all([
     loadBackgroundSprites(),
     levelPromise
