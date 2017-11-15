@@ -10,22 +10,22 @@ export default class KeyboardState {
     this.keyMap = new Map();
   }
 
-  addMapping(keyCode, fn) {
-    this.keyMap.set(keyCode, fn);
+  addMapping(code, fn) {
+    this.keyMap.set(code, fn);
   }
 
   handleEvent(evt) {
-    const { keyCode } = evt;
+    const { code } = evt;
 
-    if (!this.keyMap.has(keyCode)) return;
+    if (!this.keyMap.has(code)) return;
 
     evt.preventDefault();
     const keyState = evt.type === 'keydown' ? PRESSED : RELEASED;
 
-    if (this.keyStates.get(keyCode) === keyState) return;
+    if (this.keyStates.get(code) === keyState) return;
 
-    this.keyStates.set(keyCode, keyState);
-    this.keyMap.get(keyCode)(keyState);
+    this.keyStates.set(code, keyState);
+    this.keyMap.get(code)(keyState);
   }
 
   listenTo(window) {
