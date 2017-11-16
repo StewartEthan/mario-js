@@ -2,7 +2,7 @@ import { loadImage } from './loaders.js';
 import SpriteSheet from './SpriteSheet.js';
 
 export function loadMarioSprite() {
-  return loadImage('./img/characters.gif')
+  return loadImage('/img/characters.gif')
     .then(img => {
       const sprites = new SpriteSheet(img, 16,16);
       sprites.define('idle', 276,44, 16,16);
@@ -11,7 +11,7 @@ export function loadMarioSprite() {
 }
 
 export function loadBackgroundSprites() {
-  return loadImage('./img/tiles.png')
+  return loadImage('/img/tiles.png')
     .then(img => {
       const sprites = new SpriteSheet(img, 16,16);
       sprites.defineTile('ground', 0,0);
