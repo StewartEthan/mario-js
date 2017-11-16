@@ -1,27 +1,39 @@
-// function drawBackground(bkgd, ctx, sprites) {
-//   bkgd.ranges.forEach(([x1,x2, y1,y2]) => {
-//     for (let x = x1; x < x2; ++x) {
-//       for (let y = y1; y < y2; ++y) {
-//         sprites.drawTile(bkgd.tile, ctx, x, y);
-//       }
-//     }
-//   });
-// }
-
 export function createBackgroundLayer(level, sprites) {
+  const { tiles } = level;
+  const resolver = level.tileCollider.tiles;
+
   const buffer = document.createElement('canvas');
-  buffer.width = 2048;
+  buffer.width = 256 + 16;
   buffer.height = 240;
 
   const ctx = buffer.getContext('2d');
 
-  level.tiles.forEach((tile, x,y) => {
-    sprites.drawTile(tile.name, ctx, x,y);
-  })
+  let startIdx, endIdx;
+
+  function redraw(drawFrom, drawTo) {
+    if (drawFrom === startIdx && drawTo === endIdx) return;
+
+    startIdx = drawFrom;
+    endIdx = drawTo;
+    console.log('redrawing');
+    for (let x = drawFrom; x <= drawTo; ++x) {
+      const col = tiles.grid[x];
+      if (col) {
+        col.forEach((tile, y) => {
+          sprites.drawTile(tile.name, ctx, x-startIdx, y);
+        });
+      }
+    }
+  }
 
   return function drawBackgroundLayer(ctx, camera) {
+    const drawWidth = resolver.toIndex(camera.size.x);
+    const drawFrom = resolver.toIndex(camera.pos.x);
+    const drawTo = drawFrom + drawWidth;
+    redraw(drawFrom, drawTo);
+
     const { x:camX, y:camY } = camera.pos;
-    ctx.drawImage(buffer, -camX, -camY);
+    ctx.drawImage(buffer, -camX % 16, -camY % 16);
   }
 }
 
@@ -78,5 +90,17 @@ export function createCollisionLayer(level) {
     });
 
     resolvedTiles.length = 0;
+  }
+}
+
+export function createCameraLayer(cameraToDraw) {
+  return function drawCameraRect(ctx, fromCamera) {
+    ctx.strokeStyle = 'purple';
+    ctx.beginPath();
+    ctx.rect(
+      cameraToDraw.pos.x - fromCamera.pos.x,
+      cameraToDraw.pos.y - fromCamera.pos.y,
+      cameraToDraw.size.x,cameraToDraw.size.y);
+    ctx.stroke();
   }
 }
