@@ -46,16 +46,25 @@ function createTiles(level, bkgds) {
   });
 }
 
-function loadSpriteSheet(name) {
+export function loadSpriteSheet(name) {
   return loadJson(`./sprites/${name}.json`)
     .then(sheetSpec => Promise.all([ sheetSpec, loadImage(sheetSpec.imageUrl)]))
     .then(([ sheetSpec, img ]) => {
       const sprites = new SpriteSheet(img, sheetSpec.tileW, sheetSpec.tileH);
 
-      sheetSpec.tiles.forEach(tileSpec => {
-        const [ x,y ] = tileSpec.index;
-        sprites.defineTile(tileSpec.name, x,y);
-      });
+      if (sheetSpec.tiles) {
+        sheetSpec.tiles.forEach(tileSpec => {
+          const [ x,y ] = tileSpec.index;
+          sprites.defineTile(tileSpec.name, x,y);
+        });
+      }
+
+      if (sheetSpec.frames) {
+        sheetSpec.frames.forEach(frameSpec => {
+          const { name, rect } = frameSpec;
+          sprites.define(name, ...rect);
+        });
+      }
 
       return sprites;
     });
