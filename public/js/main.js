@@ -4,7 +4,7 @@ import { createMario } from './entities.js';
 import { createCollisionLayer, createCameraLayer } from './layers.js';
 import { setupKeyboard } from './input.js';
 import Camera from './Camera.js';
-import { setupMouseCtrl } from './debug.js';
+// import { setupMouseCtrl } from './debug.js';
 
 const canvas = document.querySelector('#screen');
 const ctx = canvas.getContext('2d');
@@ -27,7 +27,7 @@ Promise.all([
     const input = setupKeyboard(mario);
     input.listenTo(window);
 
-    setupMouseCtrl(canvas, mario, camera);
+    // setupMouseCtrl(canvas, mario, camera);
 
     const timer = new Timer(1/60);
 
@@ -46,6 +46,9 @@ Promise.all([
         // mario.vel.y += GRAVITY * DELTA_TIME;
       } else {
         shouldMarioUpdate = currentFrames++ === 60;
+      }
+      if (mario.pos.x > 100) {
+        camera.pos.x = mario.pos.x - 100;
       }
       level.comp.draw(ctx, camera);
       // mario.vel.y += GRAVITY * DELTA_TIME;
