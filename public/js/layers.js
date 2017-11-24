@@ -1,6 +1,7 @@
-export function createBackgroundLayer(level, sprites) {
-  const { tiles } = level;
-  const resolver = level.tileCollider.tiles;
+import TileResolver from './TileResolver.js';
+
+export function createBackgroundLayer(level, tiles, sprites) {
+  const resolver = new TileResolver(tiles);
 
   const buffer = document.createElement('canvas');
   buffer.width = 256 + 16;
@@ -8,15 +9,12 @@ export function createBackgroundLayer(level, sprites) {
 
   const ctx = buffer.getContext('2d');
 
-  let startIdx, endIdx;
-
-  function redraw(drawFrom, drawTo) {
+  function redraw(startIdx, endIdx) {
     // if (drawFrom === startIdx && drawTo === endIdx) return;
 
-    startIdx = drawFrom;
-    endIdx = drawTo;
+    ctx.clearRect(0,0, buffer.width,buffer.height);
 
-    for (let x = drawFrom; x <= drawTo; ++x) {
+    for (let x = startIdx; x <= endIdx; ++x) {
       const col = tiles.grid[x];
       if (col) {
         col.forEach((tile, y) => {
