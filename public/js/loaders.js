@@ -17,36 +17,6 @@ function loadJson(url) {
   return fetch(url).then(r => r.json());
 }
 
-function createTiles(level, bkgds) {
-  function applyRange(bkgd, xStart,xLen, yStart,yLen) {
-    const xEnd = xStart + xLen;
-    const yEnd = yStart + yLen;
-    for (let x = xStart; x < xEnd; ++x) {
-      for (let y = yStart; y < yEnd; ++y) {
-        level.tiles.set(x,y, {
-          name: bkgd.tile,
-          type: bkgd.type
-        });
-      }
-    }
-  }
-
-  bkgds.forEach(bkgd => {
-    bkgd.ranges.forEach(range => {
-      if (range.length === 4) {
-        const [ xStart,xLen, yStart,yLen ] = range;
-        applyRange(bkgd, xStart,xLen, yStart,yLen);
-      } else if (range.length === 3) {
-        const [ xStart, xLen, yStart ] = range;
-        applyRange(bkgd, xStart,xLen, yStart,1);
-      } else if (range.length === 2) {
-        const [ xStart, yStart ] = range;
-        applyRange(bkgd, xStart,1, yStart,1);
-      }
-    });
-  });
-}
-
 export function loadSpriteSheet(name) {
   return loadJson(`./sprites/${name}.json`)
     .then(sheetSpec => Promise.all([ sheetSpec, loadImage(sheetSpec.imageUrl)]))
@@ -84,7 +54,7 @@ export function loadLevel(name) {
     .then(([levelSpec, bkgdSprites]) => {
       const level = new Level();
 
-      createTiles(level, levelSpec.backgrounds);
+      createTiles(level, levelSpec.backgrounds, levelSpec.patterns);
 
       const bkgdLayer = createBackgroundLayer(level, bkgdSprites);
       level.comp.layers.push(bkgdLayer);
@@ -94,4 +64,42 @@ export function loadLevel(name) {
 
       return level;
     });
+}
+
+function createTiles(level, bkgds, patterns, offX = 0, offY = 0) {
+  function applyRange(bkgd, xStart,xLen, yStart,yLen) {
+    const xEnd = xStart + xLen;
+    const yEnd = yStart + yLen;
+    for (let x = xStart; x < xEnd; ++x) {
+      for (let y = yStart; y < yEnd; ++y) {
+        const derivedX = x + offX;
+        const derivedY = y + offY;
+
+        if (bkgd.pattern) {
+          const bkgds = patterns[bkgd.pattern].backgrounds;
+          createTiles(level, bkgds, patterns, derivedX, derivedY);
+        } else {
+          level.tiles.set(derivedX, derivedY, {
+            name: bkgd.tile,
+            type: bkgd.type
+          });
+        }
+      }
+    }
+  }
+
+  bkgds.forEach(bkgd => {
+    bkgd.ranges.forEach(range => {
+      if (range.length === 4) {
+        const [ xStart,xLen, yStart,yLen ] = range;
+        applyRange(bkgd, xStart,xLen, yStart,yLen);
+      } else if (range.length === 3) {
+        const [ xStart, xLen, yStart ] = range;
+        applyRange(bkgd, xStart,xLen, yStart,1);
+      } else if (range.length === 2) {
+        const [ xStart, yStart ] = range;
+        applyRange(bkgd, xStart,1, yStart,1);
+      }
+    });
+  });
 }
