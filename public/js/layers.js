@@ -11,16 +11,20 @@ export function createBackgroundLayer(level, sprites) {
   let startIdx, endIdx;
 
   function redraw(drawFrom, drawTo) {
-    if (drawFrom === startIdx && drawTo === endIdx) return;
+    // if (drawFrom === startIdx && drawTo === endIdx) return;
 
     startIdx = drawFrom;
     endIdx = drawTo;
-    console.log('redrawing');
+
     for (let x = drawFrom; x <= drawTo; ++x) {
       const col = tiles.grid[x];
       if (col) {
         col.forEach((tile, y) => {
-          sprites.drawTile(tile.name, ctx, x-startIdx, y);
+          if (sprites.animations.has(tile.name)) {
+            sprites.drawAnim(tile.name, ctx, x-startIdx, y, level.totalTime);
+          } else {
+            sprites.drawTile(tile.name, ctx, x-startIdx, y);
+          }
         });
       }
     }

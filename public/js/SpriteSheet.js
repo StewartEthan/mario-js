@@ -4,6 +4,11 @@ export default class SpriteSheet {
     this.width = w;
     this.height = h;
     this.tiles = new Map();
+    this.animations = new Map();
+  }
+
+  defineAnim(name, animation) {
+    this.animations.set(name, animation);
   }
 
   define(name, x, y, w, h) {
@@ -40,7 +45,12 @@ export default class SpriteSheet {
     ctx.drawImage(buffer, x, y);
   }
 
-  drawTile(name, ctx, x, y) {
+  drawAnim(name, ctx, x,y, distance) {
+    const animation = this.animations.get(name);
+    this.drawTile(animation(distance), ctx, x,y);
+  }
+
+  drawTile(name, ctx, x,y) {
     this.draw(name, ctx, x * this.width, y * this.height);
   }
 }
