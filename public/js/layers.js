@@ -85,9 +85,9 @@ export function createCollisionLayer(level) {
       ctx.strokeStyle = 'red';
       ctx.beginPath();
       ctx.rect(
-        x-camera.pos.x,
-        y-camera.pos.y,
-        entity.size.x,entity.size.y);
+        entity.bounds.left - camera.pos.x,
+        entity.bounds.top - camera.pos.y,
+        entity.size.x, entity.size.y);
       ctx.stroke();
     });
 
