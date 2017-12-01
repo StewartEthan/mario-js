@@ -22,10 +22,12 @@ export class Trait {
 
 export default class Entity {
   constructor() {
-    this.pos = new Vector(0,0);
-    this.vel = new Vector(0,0);
-    this.size = new Vector(0,0);
     this.offset = new Vector(0,0);
+    this.pos = new Vector(0,0);
+    this.size = new Vector(0,0);
+    this.vel = new Vector(0,0);
+    
+    this.canCollide = true;
     this.bounds = new BoundingBox(this.pos, this.size, this.offset);
     this.lifetime = 0;
 
